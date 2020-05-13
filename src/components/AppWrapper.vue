@@ -116,7 +116,6 @@ export default class AppWrapper extends Vue {
     }
 
     mounted() {
-        // TODO: remove if statement, debug mode
         if (this.rows.length == 0) {
             this.$store.commit('addColumn')
             this.$store.commit('addRow')

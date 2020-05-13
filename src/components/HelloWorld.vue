@@ -136,31 +136,16 @@ export default class HelloWorld extends Vue {
 }
 </script>
 
-<style scoped lang="less">
-h3 {
-  margin: 40px 0 0;
-}
+<style lang="less">
 ul {
   list-style-type: none;
   padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
 }
 .columns.is-vertical {
   flex-direction: column;
 }
 .main {
     background-color: #2980b9;
-}
-
-/* TODO: iterate */
-.stuff {
-    margin: 1%;
 }
 
 @media screen and (max-width: 768px) {

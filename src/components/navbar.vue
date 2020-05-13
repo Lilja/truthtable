@@ -17,7 +17,7 @@
                <b-icon
                   icon="github"
                   pack="fab" >
-               </b-icon> 
+               </b-icon>
             </b-navbar-item>
         </template>
     </b-navbar>
