@@ -1,14 +1,19 @@
-<template>
-    <HelloWorld />
+<template >
+    <div>
+        <NavBar />
+        <router-view />
+    </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import HelloWorld from './components/HelloWorld.vue';
+import NavBar from './components/navbar.vue';
 
 @Component({
   components: {
     HelloWorld,
+    NavBar
   },
 })
 export default class App extends Vue {}
@@ -23,4 +28,5 @@ export default class App extends Vue {}
   color: #2c3e50;
   margin-top: 60px;
 }
+
 </style>

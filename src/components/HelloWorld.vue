@@ -1,64 +1,97 @@
 <template>
-  <div class="hello">
-    <p>
-        <table>
-          <thead>
-            <tr>
-                <th v-for="(column, idx) in columns" :key="idx">
-                    <input v-model="columns[idx]" />
-                </th>
-                <input type="button" value="click me for free covid-19" @click="addColumn" />
-                <th>Desired result</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(row, rowindex) in rows" :key="rowindex">
-              <td v-for="(col, colindex) in row" :key="rowindex-colindex">
-                  <select v-model="rows[rowindex][colindex]">
-                    <option value=true>true</option>
-                    <option value=false>false</option>
-                  </select>
-              </td>
-              <td v-if="rows && rowindex != rows.length - 1"></td>
-              <td v-if="rows && rowindex == rows.length - 1">
-                <input type="button" value="+" @click="addRow">
-              </td>
-              <td>
-                  <select v-model="results[rowindex]">
-                    <option value=true>true</option>
-                    <option value=false>false</option>
-                  </select>
-              </td>
-            </tr>
-            <tr v-if="rows.length == 0">
-              <td v-if="rows.length == 0">
-                <input type="button" value="+" @click="addRow">
-              </td>
-            </tr>
-          </tbody>
-          <div v-for="error in errors" :key="error">
-              {{ error }}
-          </div>
-          <div v-for="expression in expressions" :key="expression">
-            {{ expression }}
-          </div>
-          <div>
-            Number of expressions generated: {{ statistics.numberOfExpressions }}
-          </div>
-          <input type="button" @click="run" value="Find my expression" />
-        </table>
-    </p>
-  </div>
+    <div>
+        <section class="section main">
+            <div class="container">
+                <div class="columns is-centered">
+                    <div class="column is-half">
+                        <AppWrapper />
+                        <div v-for="error in errors" :key="error">
+                            {{ error }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section">
+            <div class="container">
+                <div class="columns is-centered">
+                    <div class="column is-half is-vertical" style="text-align: center">
+                        <b-button v-if="loadingExpressions" class="is-medium is-loading">Process</b-button>
+                        <b-button v-if="!loadingExpressions" @click="run" class="is-medium">Process</b-button>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="columns is-centered">
+                    <div class="column is-half">
+                        <p v-if="executed && expressions.length > 0">
+                            Success! With the test cases above <code>{{ expressions[0] }}</code> is a solution for the problem above.
+                        </p>
+                        <p v-if="executed && expressions.length == 0">
+                            No expressions could be generated that matched your criteria. Double check the inputs above and try again.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="columns is-centered">
+                    <div class="column is-one-quarter" v-if="executed && expressions.length > 1">
+                        <p v-if="expressions.length > 1">
+                        Here are some other solutions that also fit your criteria(s):
+                        </p>
+                        <div v-for="expression in expressions" :key="expression" class="stuff2">
+                              <b-icon
+                                type="is-success"
+                                icon="check"
+                                size="is-small" ></b-icon>
+
+                            <code>{{ expression }}</code>
+                        </div>
+                    </div>
+                    <div class="column is-one-quarter">
+                        <h1 v-if="Object.keys(statistics).length > 1">Statistics</h1>
+                        <p v-if="Object.keys(statistics).length > 1">
+                            Number of expressions generated: {{ statistics.numberOfExpressions }}
+                        </p>
+                        <p v-if="Object.keys(statistics).length > 1">
+                            Number of expressions that were filtered due to failed test cases: {{ statistics.numberOfExpressions - expressions.length}}
+                        </p>
+                        <p v-if="Object.keys(statistics).length > 1">
+                            Number of matching expressions: {{ expressions.length }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+       </section>
+    </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import AppWrapper from './AppWrapper.vue'
+import { Component, Vue } from 'vue-property-decorator';
 import { reverseLookup } from './truthtable'
 
-@Component
+const sleep = async(ms: number) => new Promise(res => setTimeout(res, ms))
+
+@Component({components: {AppWrapper}})
 export default class HelloWorld extends Vue {
+    get loadingExpressions(): boolean {
+       return this.$store.state.loadingExpressions
+    }
+    get executed(): boolean {
+       return this.$store.state.executed
+    }
+    get expressions(): Array<string> {
+       return this.$store.state.expressions
+    }
+    get errors(): Array<string> {
+       return this.$store.state.errors
+    }
+    get statistics() {
+       return this.$store.state.expressions
+    }
     get rows(): Array<Array<boolean>> {
-        console.log('rows')
+       console.log('rows')
        return this.$store.state.rows
     }
     get columns(): Array<string> {
@@ -68,23 +101,11 @@ export default class HelloWorld extends Vue {
        return this.$store.state.results
     }
 
-    addColumn() {
-        this.$store.commit('addColumn')
-    }
-
-    addRow() {
-        this.$store.commit('addRow')
-    }
-
-    checkUniqueColumns(columns) {
-        if(columns.length <= 0) {
-            this.errors.push('Must have at least one column')
-        }
-    }
-
-    run() {
-        this.clearErrors()
-        this.checkUniqueColumns(this.columns)
+    async run() {
+        this.$store.dispatch('loadingExpressions', true)
+        this.$store.dispatch('clearErrors')
+        this.$store.dispatch('checkUniqueColumns')
+        await sleep(1000)
 
         if (this.errors.length == 0) {
             const ran = reverseLookup(
@@ -92,42 +113,15 @@ export default class HelloWorld extends Vue {
                 this.results,
                 this.columns
             )
-            this.expressions = ran.expressions
+            this.$store.commit('setExpressions', ran.expressions)
+            this.$store.commit('setStatistics', ran.statistics)
             this.statistics.numberOfExpressions = ran.statistics.numberOfExpressions
+            this.$store.dispatch('loadingExpressions', false)
         }
     }
-
-    clearErrors() {
-        this.errors = []
-    }
-
-    data() {
-        return {
-            errors: [],
-            expressions: Array<string>(),
-            statistics: {
-                numberOfExpressions: 0
-            }
-        }
-    }
-
-    created() {
-        console.log('CREATED')
-        this.$store.commit('addColumn')
-        this.$store.commit('addRow')
-    }
-
-    @Watch('columns')
-    onPropertyChanged(newColumns) {
-        console.log('Watch', newColumns)
-        this.clearErrors()
-        this.checkUniqueColumns(newColumns)
-    }
-
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 h3 {
   margin: 40px 0 0;
@@ -143,4 +137,25 @@ li {
 a {
   color: #42b983;
 }
+.columns.is-vertical {
+  flex-direction: column;
+}
+.main {
+    background-color: #2980b9;
+}
+
+/* TODO: iterate */
+.stuff {
+    margin: 1%;
+}
+
+@media screen and (max-width: 768px) {
+.section {
+    padding-top: 2em;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+    padding-bottom: 2em;
+}
+}
+
 </style>

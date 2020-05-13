@@ -268,46 +268,7 @@ function filterSimpleEqualExpressions(expr: Array<Expression>) {
         p => !onlyOrFormats.includes(p.format)
     )
     return algos
-
-
 }
-
-function isSameExpression(
-    o1: Expression,
-    o2: Expression
-): boolean {
-    return o1.format === o2.format
-}
-
-
-function isIsometricExpression(
-    o1: Expression,
-    o2: Expression
-): boolean {
-    const regedSymbols = [{
-        're': /\|\|/,
-        'key': '||'
-    }, {
-        're': /&&/,
-        'key': '&&'
-      }
-    ]
-    const o1Symbols:  { [key: string]: number } = {}
-    for(const symbol of regedSymbols) {
-        const re = new RegExp(symbol.re, 'g')
-        o1Symbols[symbol.key] = (o1.format.match(re) || []).length
-    }
-    const o2Symbols:  { [key: string]: number } = {}
-    for(const symbol of regedSymbols) {
-        const re = new RegExp(symbol.re, 'g')
-        o2Symbols[symbol.key] = (o2.format.match(re) || []).length
-    }
-    o1.format.split(' ')
-    return true
-}
-
-
-
 
 function reverseLookup(
     table: Array<Array<boolean>>,
@@ -344,8 +305,6 @@ function reverseLookup(
 
 export {
     reverseLookup,
-    recursivePermutationExpressionGenerator,
-    permutationTest,
     Expression,
-    isIsometricExpression
+    Result,
 }

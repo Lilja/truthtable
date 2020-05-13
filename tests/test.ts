@@ -13,7 +13,7 @@ describe('basic checks', function() {
         ],
         [false, true],
         ['x']
-      )[0]).to.equal('x')
+      ).expressions[0]).to.equal('x')
     })
 
     it('not', function() {
@@ -24,7 +24,7 @@ describe('basic checks', function() {
         ],
         [true, false],
         ['x']
-      )[0]).to.equal('!x')
+      ).expressions[0]).to.equal('!x')
     })
 
   it('or', function() {
@@ -37,7 +37,7 @@ describe('basic checks', function() {
         ],
         [true, true, false, true],
         ['x', 'y']
-      )[0]).to.equal('x || y')
+      ).expressions[0]).to.equal('x || y')
 
       expect(reverseLookup(
         [
@@ -48,7 +48,7 @@ describe('basic checks', function() {
         ],
         [true, true, true, false],
         ['x', 'y']
-      )[0]).to.equal('!x || y')
+      ).expressions[0]).to.equal('!x || y')
 
       expect(reverseLookup(
         [
@@ -59,7 +59,7 @@ describe('basic checks', function() {
         ],
         [true, true, false, true],
         ['x', 'y', 'z']
-      )[0]).to.equal('x || (y || z)')
+      ).expressions[0]).to.equal('x || (y || z)')
   });
   it('and', function() {
       expect(reverseLookup(
@@ -71,7 +71,7 @@ describe('basic checks', function() {
         ],
         [true, false, false, false],
         ['x', 'y']
-      )[0]).to.equal('x && y')
+      ).expressions[0]).to.equal('x && y')
     expect(reverseLookup(
         [
             [true, true, true],
@@ -81,6 +81,6 @@ describe('basic checks', function() {
         ],
         [true, false, false, false],
         ['x', 'y', 'z']
-      )[0]).to.equal('x && (y && z)')
+      ).expressions[0]).to.equal('x && (y && z)')
   });
 });
