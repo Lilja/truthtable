@@ -137,7 +137,7 @@ export default new Vuex.Store({
     },
     exampleThree({state}) {
         state.processed = false
-        state.exampleText = 'In europe there is a thing called <a href="https://en.wikipedia.org/wiki/Little_Saturday">"small saturday"</a>. I say, we should celebrate these days. But what expression to use?'
+        state.exampleText = 'In europe there is a thing called <a href="https://en.wikipedia.org/wiki/Little_Saturday">"small saturday"</a>. Along with weekends, we need an equation to find out if we can celebrate little satuday as well as the weekend. But what expression to use?'
         state.columnNames = [
             'isSmallSaturday',
             'isWeekend'
