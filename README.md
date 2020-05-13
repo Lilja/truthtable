@@ -1,24 +1,9 @@
 # truth-table
 
-## Project setup
-```
-yarn install
-```
+Turn a 2d boolean matrix into a boolean expression.
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
 
-### Compiles and minifies for production
-```
-yarn build
-```
+[Try it!](https://elated-williams-9dbb28.netlify.app/)
 
-### Lints and fixes files
-```
-yarn lint
-```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Built with Vue.js, typescript and bulma.
