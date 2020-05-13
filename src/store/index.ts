@@ -118,7 +118,7 @@ export default new Vuex.Store({
     },
     exampleTwo({state}) {
         state.processed = false
-        state.exampleText = 'Youtube video: <a href="https://www.youtube.com/watch?v=pe2cnWpvj2o">Bongo day</a>'
+        state.exampleText = 'Is it bongo time? Youtube video: <a href="https://www.youtube.com/watch?v=pe2cnWpvj2o">Bongo day</a>'
         state.columnNames = [
             'isAnnoyingJD',
             'isPlayingBongo',
