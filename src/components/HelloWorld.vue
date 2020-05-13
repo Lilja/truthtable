@@ -78,7 +78,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import { reverseLookup } from './truthtable'
 
 const sleep = async(ms: number) => new Promise(res => setTimeout(res, ms))
-const randomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+const randomInteger = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 @Component({components: {AppWrapper}})
 export default class HelloWorld extends Vue {

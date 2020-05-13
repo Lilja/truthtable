@@ -7,7 +7,8 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "test": "env TS_NODE_PROJECT=\"tests/tsconfig.testing.json\" mocha -r ts-node/register tests/**/test.ts",
-    "coverage": "nyc -r lcov -e .ts -x \"*.test.ts\" npm run test"
+    "coverage": "nyc -r lcov -e .ts -x \"*.test.ts\" npm run test",
+    "build-docker": "docker build -t lilja/truthtable ."
   },
   "dependencies": {
     "@types/vue-material": "git+https://github.com/calebsander/vue-material-types.git",
