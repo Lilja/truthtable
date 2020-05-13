@@ -287,7 +287,6 @@ function reverseLookup(
     }
     let methodsToTry = recursivePermutationExpressionGenerator(params)
     res.statistics.numberOfExpressions = methodsToTry.length
-    console.log(methodsToTry)
     table.forEach(
         (elements: Array<boolean>, index: number) => {
             methodsToTry = permutationTest(methodsToTry, params, elements, desiredResult[index])

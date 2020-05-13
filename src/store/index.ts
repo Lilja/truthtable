@@ -33,13 +33,14 @@ export default new Vuex.Store({
       },
       loadingExpressions: false,
       executed: false,
+      processed: false,
       exampleText: ""
   },
   mutations: {
     addColumn(state) {
+        state.processed = false
         state.exampleText = ''
         const element = leftJoin(state.columnNames, generatedColumnNames)
-        console.log('current', state.columnNames, 'pushing elem', element)
         state.rows = state.rows.map(
             row => row.concat(false)
         )
@@ -47,6 +48,7 @@ export default new Vuex.Store({
         state.columnNames.push(element)
     },
     addRow(state) {
+        state.processed = false
         state.exampleText = ''
         state.rows.push(
             Array(state.columnNames.length).fill(false)
@@ -70,12 +72,13 @@ export default new Vuex.Store({
         state.rows = state.rows.filter((row, index: number) => index != e)
     },
     setExpressions(state, expressions: Array<string>) {
-        state.exampleText = ''
         state.executed = true
         state.expressions = expressions
     },
+    setProcessed(state, processed: boolean) {
+        state.processed = processed
+    },
     setStatistics(state, numberOfExpressions) {
-        state.exampleText = ''
         state.statistics.numberOfExpressions = numberOfExpressions
     }
   },
@@ -96,8 +99,10 @@ export default new Vuex.Store({
         state.columnNames = ['x']
         state.results = [false]
         state.rows = [[false]]
+        state.executed = false
     },
     exampleOne({state}) {
+        state.processed = false
         state.exampleText = 'Is it possible for me to view this movie? Let\'s find out'
         state.columnNames = [
             'isOverTheAgeOf18',
@@ -112,7 +117,8 @@ export default new Vuex.Store({
         state.results = [false, false, false, true]
     },
     exampleTwo({state}) {
-        state.exampleText = '<a href="https://www.youtube.com/watch?v=pe2cnWpvj2o">Youtube video: Bongo day!</a>'
+        state.processed = false
+        state.exampleText = 'Youtube video: <a href="https://www.youtube.com/watch?v=pe2cnWpvj2o">Bongo day</a>'
         state.columnNames = [
             'isAnnoyingJD',
             'isPlayingBongo',
@@ -130,7 +136,8 @@ export default new Vuex.Store({
         state.results = [false, false, false, false, false, false, true]
     },
     exampleThree({state}) {
-        state.exampleText = 'In europe there is a thing called "small saturday". I say, we should celebrate these days. But what expression to use?'
+        state.processed = false
+        state.exampleText = 'In europe there is a thing called <a href="https://en.wikipedia.org/wiki/Little_Saturday">"small saturday"</a>. I say, we should celebrate these days. But what expression to use?'
         state.columnNames = [
             'isSmallSaturday',
             'isWeekend'
@@ -145,6 +152,7 @@ export default new Vuex.Store({
         state.results = [true, true, true, false, true]
     },
     exampleFour({state}) {
+        state.processed = false
         state.exampleText = 'Teenagers are not allowed in this exclusive adult-only club. What should our outdoor sign say?'
         state.columnNames = [
             'isTeenager',

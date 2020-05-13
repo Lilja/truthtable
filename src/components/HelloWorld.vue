@@ -18,6 +18,12 @@
                     <div class="column is-half is-vertical" style="text-align: center">
                         <b-button v-if="loadingExpressions" class="is-medium is-loading">Process</b-button>
                         <b-button v-if="!loadingExpressions" @click="run" class="is-medium">Process</b-button>
+                          <b-icon
+                            class="exampleIndicatorIcon"
+                            v-if="exampleText && !processed"
+                            icon="arrow-left"
+                            size="is-small"
+                            ></b-icon>
                     </div>
                 </div>
             </div>
@@ -36,7 +42,7 @@
             <div class="container">
                 <div class="columns is-centered">
                     <div class="column is-one-quarter" v-if="executed && expressions.length > 1">
-                        <p v-if="expressions.length > 1">
+                        <p v-if="executed && expressions.length > 1">
                         Here are some other solutions that also fit your criteria(s):
                         </p>
                         <div v-for="expression in expressions" :key="expression" class="stuff2">
@@ -49,14 +55,14 @@
                         </div>
                     </div>
                     <div class="column is-one-quarter">
-                        <h1 v-if="Object.keys(statistics).length > 1">Statistics</h1>
-                        <p v-if="Object.keys(statistics).length > 1">
+                        <h1 v-if="executed && Object.keys(statistics).length > 1">Statistics</h1>
+                        <p v-if="executed && Object.keys(statistics).length > 1">
                             Number of expressions generated: {{ statistics.numberOfExpressions }}
                         </p>
-                        <p v-if="Object.keys(statistics).length > 1">
+                        <p v-if="executed && Object.keys(statistics).length > 1">
                             Number of expressions that were filtered due to failed test cases: {{ statistics.numberOfExpressions - expressions.length}}
                         </p>
-                        <p v-if="Object.keys(statistics).length > 1">
+                        <p v-if="executed && Object.keys(statistics).length > 1">
                             Number of matching expressions: {{ expressions.length }}
                         </p>
                     </div>
@@ -72,6 +78,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import { reverseLookup } from './truthtable'
 
 const sleep = async(ms: number) => new Promise(res => setTimeout(res, ms))
+const randomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 @Component({components: {AppWrapper}})
 export default class HelloWorld extends Vue {
@@ -80,6 +87,12 @@ export default class HelloWorld extends Vue {
     }
     get executed(): boolean {
        return this.$store.state.executed
+    }
+    get processed(): boolean {
+       return this.$store.state.processed
+    }
+    get exampleText(): boolean {
+       return this.$store.state.exampleText
     }
     get expressions(): Array<string> {
        return this.$store.state.expressions
@@ -91,7 +104,6 @@ export default class HelloWorld extends Vue {
        return this.$store.state.expressions
     }
     get rows(): Array<Array<boolean>> {
-       console.log('rows')
        return this.$store.state.rows
     }
     get columns(): Array<string> {
@@ -105,7 +117,8 @@ export default class HelloWorld extends Vue {
         this.$store.dispatch('loadingExpressions', true)
         this.$store.dispatch('clearErrors')
         this.$store.dispatch('checkUniqueColumns')
-        await sleep(1000)
+
+        await sleep(randomInteger(250, 1000))
 
         if (this.errors.length == 0) {
             const ran = reverseLookup(
@@ -113,6 +126,7 @@ export default class HelloWorld extends Vue {
                 this.results,
                 this.columns
             )
+            this.$store.commit('setProcessed', true)
             this.$store.commit('setExpressions', ran.expressions)
             this.$store.commit('setStatistics', ran.statistics)
             this.statistics.numberOfExpressions = ran.statistics.numberOfExpressions
@@ -156,6 +170,22 @@ a {
     padding-right: 0.2em;
     padding-bottom: 2em;
 }
+}
+
+.exampleIndicatorIcon {
+    position: relative;
+    top: 10px;
+    left: 20px;
+    animation-name: example;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes example {
+  0% { left: 20px;}
+  25% { left: 10px;}
+  50% { left: 10px;}
+  100% { left: 20px; }
 }
 
 </style>

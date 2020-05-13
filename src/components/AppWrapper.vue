@@ -10,9 +10,8 @@
     </tr>
       <tr>
         <th />
-        <th v-for="(column, idx) in columns" :key="column" class="tdCenterContext">
+        <th v-for="(column, idx) in columns" :key="column" class="tdCenterContext" @click="deleteColumn(idx)">
             <b-icon
-                @click="deleteColumn(idx)"
                 icon="times"
                 size="is-small">
             </b-icon>
@@ -26,10 +25,9 @@
     </tr>
   </thead>
   <tbody>
-    <tr v-for="(row, rowindex) in rows" :key="rowindex">
+    <tr v-for="(row, rowindex) in rows" :key="rowindex" @click="deleteRow(rowindex)">
         <td class="tdCenterContext">
             <b-icon
-                @click="deleteRow(rowindex)"
                 icon="times"
                 size="is-small">
             </b-icon>
@@ -50,14 +48,32 @@
     </tr>
   </tbody>
 </table>
-<div class="tableOptions">
-    <b-button @click="addRow" class="addBtn" size="is-small">Add row</b-button>
-    <b-button @click="addColumn" class="addBtn" size="is-small">Add parameter</b-button>
-    <b-button @click="$store.dispatch('exampleOne')" class="addBtn" size="is-small">Example 1</b-button>
-    <b-button @click="$store.dispatch('exampleTwo')" class="addBtn" size="is-small">Example 2</b-button>
-    <b-button @click="$store.dispatch('exampleThree')" class="addBtn" size="is-small">Example 3</b-button>
-    <b-button @click="$store.dispatch('exampleFour')" class="addBtn" size="is-small">Example 4</b-button>
-    <b-button @click="$store.dispatch('reset')" class="addBtn" size="is-small">Reset</b-button>
+<div class="columns tableButtons is-centered" id="extramargin">
+    <div class="column">
+        <b-button @click="addRow" class="addBtn" size="is-small">Add row</b-button>
+    </div>
+    <div class="column">
+        <b-button @click="addColumn" class="addBtn" size="is-small">Add parameter</b-button>
+    </div>
+</div>
+<div class="columns tableButtons is-centered">
+    <div class="column is-one-fifth">
+        <b-button @click="$store.dispatch('exampleOne')" class="addBtn" size="is-small">Example 1</b-button>
+    </div>
+    <div class="column is-one-fifth">
+        <b-button @click="$store.dispatch('exampleTwo')" class="addBtn" size="is-small">Example 2</b-button>
+    </div>
+    <div class="column is-one-fifth">
+        <b-button @click="$store.dispatch('exampleThree')" class="addBtn" size="is-small">Example 3</b-button>
+    </div>
+    <div class="column is-one-fifth">
+        <b-button @click="$store.dispatch('exampleFour')" class="addBtn" size="is-small">Example 4</b-button>
+    </div>
+    <div class="column is-one-fifth">
+        <b-button @click="$store.dispatch('reset')" class="addBtn" size="is-small">Reset</b-button>
+    </div>
+</div>
+<div>
     <p v-if="exampleText" v-html="exampleText" class="exampleText"></p>
 </div>
 </div>
@@ -71,7 +87,6 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 @Component({})
 export default class AppWrapper extends Vue {
     get rows(): Array<Array<boolean>> {
-        console.log('rows')
        return this.$store.state.rows
     }
     get columns(): Array<string> {
@@ -89,7 +104,6 @@ export default class AppWrapper extends Vue {
     }
 
     deleteColumn(e: number) {
-        console.log('delete', e)
         this.$store.commit('deleteColumn', e)
     }
 
@@ -130,9 +144,6 @@ table {
 tr {
      border-bottom: 1px solid #b0b0b0;
 }
-.addBtn {
-    margin-right: 10px;
-}
 .tdCenterContext {
     text-align: center !important;
 }
@@ -142,9 +153,17 @@ tr {
 .columnText {
     max-width: 10px;
 }
-.tableOptions {
-    padding-top: 4%;
-    padding-bottom: 4%;
+.tableButtons > div{
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+    text-align: center;
+}
+.tableButtons {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+#extramargin {
+    margin-top: 0.5rem;
 }
 .brand {
     font-family: "Source Sans Pro";
@@ -153,6 +172,9 @@ tr {
 }
 .exampleText {
     color: white;
+}
+.exampleText > a {
+    color: hsl(48, 100%, 67%);
     text-decoration: none
 }
 
