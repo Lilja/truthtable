@@ -143,13 +143,12 @@ export default new Vuex.Store({
             'isWeekend'
         ]
         state.rows = [
-            [true, true],
             [true, false],
             [false, true],
             [false, false],
             [true, true],
         ]
-        state.results = [true, true, true, false, true]
+        state.results = [true, true, false, true]
     },
     exampleFour({state}) {
         state.processed = false
