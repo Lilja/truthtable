@@ -25,8 +25,8 @@
     </tr>
   </thead>
   <tbody>
-    <tr v-for="(row, rowindex) in rows" :key="rowindex" @click="deleteRow(rowindex)">
-        <td class="tdCenterContext">
+    <tr v-for="(row, rowindex) in rows" :key="rowindex">
+        <td class="tdCenterContext" @click="deleteRow(rowindex)">
             <b-icon
                 icon="times"
                 size="is-small">
